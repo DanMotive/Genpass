@@ -6,3 +6,8 @@ generatePassword.addEventListener("click", () => {
     value++;
     outputPassword.textContent = value;
 })
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("light");
+});
