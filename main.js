@@ -4,7 +4,7 @@ var value = 0;
 
 generatePassword.addEventListener("click", () => {
     value++;
-    outputPassword.textContent = value;
+    outputPassword.textContent = "Ты накликал " + value + "$";
 })
 
 const themeToggle = document.getElementById("themeToggle");
