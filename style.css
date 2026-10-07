@@ -1,48 +1,60 @@
+:root {
+    --bg: #0b0f0e;
+    --surface: #151b19;
+    --output: #0f1513;
+    --text: #f1f5f3;
+    --accent: #39d353;
+}
+
+body.light {
+    --bg: #f4f7f5;
+    --surface: #fff;
+    --output: #f0f4f1;
+    --text: #17201b;
+    --accent: #22a63a;
+}
+
 body {
-    background-color: #222;
-    color: white;
-    font-family: Arial, sans-serif;
     margin: 0;
-    transition: 0.3s;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    transition: .67s;
 }
 
 header {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 header h1 {
-    background-color: #161616;
-    padding: 15px;
-    margin: 0 auto;
-    max-width: 200px;
-    border-radius: 10px;
-}
-body.light h1 {
-    background-color: #b8b8b8;
+    font-size: 64pt;
+    margin: 0;
 }
 
 main {
-    background-color: #292929;
     max-width: 500px;
     margin: 30px auto;
     padding: 25px;
-    border-radius: 15px;
-    box-sizing: border-box;
+    background: var(--surface);
+    border-radius: 14px;
 }
 
 #outputPassword {
-    background-color: #353535;
+    margin: 0;
     padding: 15px;
-    border-radius: 8px;
+    background: var(--output);
+    border-radius: 10px;
     text-align: center;
     font-size: 20px;
 }
 
 button {
     padding: 10px 15px;
-    border: none;
-    border-radius: 7px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #071008;
     cursor: pointer;
 }
 
@@ -51,24 +63,23 @@ button {
     margin-top: 10px;
 }
 
-body.light {
-    background-color: #eeeeee;
-    color: #222;
-}
-
-body.light main {
-    background-color: #ffffff;
-}
-
-body.light #outputPassword {
-    background-color: #eeeeee;
-}
 a {
     display: inline-block;
-    padding: 10px 15px;
-    background-color: #555;
-    color: white;
-    text-decoration: none;
-    border-radius: 7px;
     margin-top: 10px;
+    padding: 10px 15px;
+    color: var(--text);
+    border: 1px solid var(--text);
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+#themeToggle {
+    margin-top: 10px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--text);
+}
+
+footer {
+    text-align: center;
 }
