@@ -1,3 +1,17 @@
 header {
     background-color: firebrick;
 }
+body {
+    background-color: #2b2b2b;
+    color: white;
+}
+body {
+    background-color: #2b2b2b;
+    color: white;
+    transition: 3.0s;
+}
+
+body.light {
+    background-color: #eeeeee;
+    color: #222222;
+}
