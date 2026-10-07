@@ -1,17 +1,71 @@
+body {
+    background-color: #2b2b2b;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    transition: 0.3s;
+}
+
 header {
-    background-color: firebrick;
+    text-align: center;
+    margin-top: 30px;
 }
-body {
-    background-color: #2b2b2b;
-    color: white;
+
+header h1 {
+    background-color: #b51f24;
+    padding: 15px;
+    margin: 0 auto;
+    max-width: 500px;
+    border-radius: 10px;
 }
-body {
-    background-color: #2b2b2b;
-    color: white;
-    transition: 3.0s;
+
+main {
+    background-color: #3a3a3a;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+#outputPassword {
+    background-color: #222;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+#generatePassword {
+    width: 100%;
+    margin-top: 10px;
 }
 
 body.light {
     background-color: #eeeeee;
-    color: #222222;
+    color: #222;
+}
+
+body.light main {
+    background-color: #ffffff;
+}
+
+body.light #outputPassword {
+    background-color: #dddddd;
+}
+a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    margin-top: 10px;
 }
