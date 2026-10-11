@@ -1,11 +1,12 @@
+import { generatePassword } from "./password.js";
+
 const generatePassword = document.getElementById("generatePassword");
 const outputPassword = document.getElementById("outputPassword");
 let value = 0;
 
-generatePassword.addEventListener("click", () => {
-    value++;
-    outputPassword.textContent = "Ты накликал " + value + "$";
-})
+generateButton.addEventListener("click", () => {
+    outputPassword.textContent = generatePassword(12);
+});
 
 const themeToggle = document.getElementById("themeToggle");
 
