@@ -1,15 +1,19 @@
 import { generatePassword } from "./password.js";
 
-const generatePassword = document.getElementById("generatePassword");
+const generateButton = document.getElementById("generatePassword");
 const outputPassword = document.getElementById("outputPassword");
-let value = 0;
+const lengthValue = document.getElementById("lengthValue");
 
 generateButton.addEventListener("click", () => {
-    outputPassword.textContent = generatePassword(12);
+  outputPassword.textContent = generatePassword(lengthValue);
+});
+
+passwordLength.addEventListener("input", () => {
+  lengthValue.textContent = passwordLength.value;
 });
 
 const themeToggle = document.getElementById("themeToggle");
 
 themeToggle.addEventListener("click", function () {
-    document.body.classList.toggle("light");
+document.body.classList.toggle("light");
 });
