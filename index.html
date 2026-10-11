@@ -11,7 +11,9 @@
         <h1>Genpass</h1> <!-- заголовок будущей странички -->
     </header>
     <main>
-        <label for="passwordLength">Длина пароля:</label>
+        <label>
+        длина пароля: <span id="lengthValue">12</span>
+        </label>
         <input id="passwordLength" type="range" min="4" max="64" value="12">
         <p id="outputPassword">Пароль</p>
         <button id="generatePassword">сгенерировать</button>
