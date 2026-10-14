@@ -3,9 +3,10 @@ import { generatePassword } from "./password.js";
 const generateButton = document.getElementById("generatePassword");
 const outputPassword = document.getElementById("outputPassword");
 const lengthValue = document.getElementById("lengthValue");
+const passwordLength = document.getElementById("passwordLength");
 
 generateButton.addEventListener("click", () => {
-  outputPassword.textContent = generatePassword(lengthValue);
+  outputPassword.textContent = generatePassword(Number(passwordLength.value));
 });
 
 passwordLength.addEventListener("input", () => {
