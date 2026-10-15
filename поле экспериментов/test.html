@@ -1,3 +1,221 @@
-<html>
-    haha <!-- балуйся и тести тут чтото -->
+<!DOCTYPE html><html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Змейка 🐍</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#101815;color:#effff3;font:16px Arial,sans-serif;display:flex;justify-content:center}
+.game{width:100%;max-width:440px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;gap:10px}
+h1{margin:0;font-size:30px}
+.stats{display:flex;gap:15px;text-align:center}
+.stats small{color:#9bb0a1}
+.stats b{display:block;font-size:24px}
+canvas{width:100%;height:auto;display:block;background:#101a18;border:1px solid #30443a;border-radius:12px;touch-action:manipulation}
+button,select{background:#18231e;color:#effff3;border:1px solid #30443a;border-radius:9px;padding:12px;font-size:15px;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid #8ce5a4}
+.controls{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+.primary{background:#8ce5a4;color:#10251a;font-weight:bold}
+.overlay{position:relative;margin-top:-250px;height:220px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;text-align:center;background:#101815ed;border-radius:12px}
+.overlay.hidden{display:none}
+.overlay h2{margin:0;font-size:25px}
+.overlay p{margin:0;color:#b7c9bd}
+.pad{display:grid;grid-template-columns:repeat(3,54px);gap:6px;justify-content:center;margin-top:15px}
+.pad button{height:48px;font-size:20px;padding:0}
+.help{text-align:center;color:#9bb0a1;font-size:12px;margin-top:12px}
+</style>
+</head>
+<body>
+<main class="game" id="game">
+<header>
+<div><h1>🐍 Змейка</h1><small style="color:#9bb0a1">Собирай яблоки!</small></div>
+<div class="stats">
+<div><small>СЧЁТ</small><b id="score">0</b></div>
+<div><small>РЕКОРД</small><b id="best">0</b></div>
+</div>
+</header><canvas id="board" width="400" height="400"></canvas>
+
+<div class="overlay" id="overlay">
+<h2 id="message">Готов играть?</h2>
+<p id="hint">Не врежься в стену или себя!</p>
+<button class="primary" id="start">▶ Начать игру</button>
+</div><div class="controls">
+<button id="pause">⏸ Пауза</button>
+<button id="restart">↻ Заново</button>
+<label style="display:flex;align-items:center;gap:5px;font-size:13px">Скорость
+<select id="speed">
+<option value="150">Медленно</option>
+<option value="105" selected>Обычно</option>
+<option value="70">Быстро</option>
+</select>
+</label>
+</div><div class="pad">
+<span></span><button data-dir="up">▲</button><span></span>
+<button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
+</div>
+<div class="help">ПК: стрелки или WASD · Пробел — пауза</div>
+</main><script>
+const $=id=>document.getElementById(id);
+const canvas=$('board'),ctx=canvas.getContext('2d');
+const N=20,C=20;
+let snake,food,dir,nextDir,score=0,best=0;
+let timer=null,playing=false,paused=false,dead=false;
+
+function newFood(){
+ let p;
+ do{
+  p={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)};
+ }while(snake.some(s=>s.x===p.x&&s.y===p.y));
+ return p;
+}
+
+function draw(){
+ ctx.fillStyle='#101a18';
+ ctx.fillRect(0,0,400,400);
+ ctx.strokeStyle='#1b2a25';
+ for(let i=0;i<=N;i++){
+  ctx.beginPath();ctx.moveTo(i*C,0);ctx.lineTo(i*C,400);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,i*C);ctx.lineTo(400,i*C);ctx.stroke();
+ }
+ ctx.fillStyle='#ff6868';
+ ctx.beginPath();
+ ctx.arc(food.x*C+10,food.y*C+10,8,0,Math.PI*2);
+ ctx.fill();
+
+ snake.forEach((s,i)=>{
+  ctx.fillStyle=i===0?'#c0ffd0':'#65ce8b';
+  ctx.beginPath();
+  ctx.roundRect(s.x*C+1,s.y*C+1,C-2,C-2,5);
+  ctx.fill();
+ });
+
+ const h=snake[0];
+ ctx.fillStyle='#10251a';
+ ctx.beginPath();
+ ctx.arc(h.x*C+7,h.y*C+7,1.8,0,Math.PI*2);
+ ctx.arc(h.x*C+14,h.y*C+7,1.8,0,Math.PI*2);
+ ctx.fill();
+}
+
+function reset(){
+ clearInterval(timer);
+ timer=null;
+ snake=[{x:9,y:10},{x:8,y:10},{x:7,y:10}];
+ dir={x:1,y:0};
+ nextDir={...dir};
+ score=0;
+ $('score').textContent=0;
+ food=newFood();
+ playing=false;paused=false;dead=false;
+ $('overlay').classList.remove('hidden');
+ $('message').textContent='Готов играть?';
+ $('hint').textContent='Не врежься в стену или себя!';
+ $('start').textContent='▶ Начать игру';
+ $('pause').textContent='⏸ Пауза';
+ draw();
+}
+
+function tick(){
+ dir=nextDir;
+ const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+ const eats=h.x===food.x&&h.y===food.y;
+ const body=snake.slice(0,eats?snake.length:snake.length-1);
+
+ if(h.x<0||h.x>=N||h.y<0||h.y>=N||
+ body.some(s=>s.x===h.x&&s.y===h.y)){
+  finish();return;
+ }
+
+ snake.unshift(h);
+
+ if(eats){
+  score+=10;
+  $('score').textContent=score;
+  best=Math.max(best,score);
+  $('best').textContent=best;
+  food=newFood();
+
+  if(snake.length===N*N){
+   finish(true);return;
+  }
+ }else{
+  snake.pop();
+ }
+ draw();
+}
+
+function run(){
+ clearInterval(timer);
+ timer=setInterval(tick,Number($('speed').value));
+}
+
+function start(){
+ if(dead)reset();
+ $('overlay').classList.add('hidden');
+ playing=true;paused=false;
+ $('pause').textContent='⏸ Пауза';
+ run();
+}
+
+function finish(won=false){
+ clearInterval(timer);timer=null;
+ playing=false;paused=false;dead=true;
+ $('overlay').classList.remove('hidden');
+ $('message').textContent=won?'🏆 Победа!':'💥 Игра окончена';
+ $('hint').textContent='Твой счёт: '+score;
+ $('start').textContent='↻ Играть снова';
+}
+
+function changeDir(name){
+ if(!playing||paused)return;
+ const dirs={
+  up:{x:0,y:-1},down:{x:0,y:1},
+  left:{x:-1,y:0},right:{x:1,y:0}
+ };
+ const v=dirs[name];
+ if(v&&!(v.x===-dir.x&&v.y===-dir.y))nextDir=v;
+}
+
+function togglePause(){
+ if(!playing&&!paused)return;
+ if(paused){
+  paused=false;playing=true;
+  $('pause').textContent='⏸ Пауза';
+  run();
+ }else{
+  paused=true;playing=false;
+  clearInterval(timer);timer=null;
+  $('pause').textContent='▶ Продолжить';
+ }
+}
+
+$('start').addEventListener('click',start);
+$('pause').addEventListener('click',togglePause);
+$('restart').addEventListener('click',()=>{reset();start()});
+$('speed').addEventListener('change',()=>{if(playing)run()});
+
+document.querySelectorAll('[data-dir]').forEach(btn=>{
+ btn.addEventListener('click',()=>changeDir(btn.dataset.dir));
+});
+
+document.addEventListener('keydown',e=>{
+ const keys={
+  ArrowUp:'up',w:'up',W:'up',
+  ArrowDown:'down',s:'down',S:'down',
+  ArrowLeft:'left',a:'left',A:'left',
+  ArrowRight:'right',d:'right',D:'right'
+ };
+ if(keys[e.key]){
+  e.preventDefault();
+  changeDir(keys[e.key]);
+ }
+ if(e.code==='Space'){
+  e.preventDefault();
+  togglePause();
+ }
+});
+
+reset();
+</script></body>
 </html>
